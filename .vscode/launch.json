@@ -1,0 +1,30 @@
+{
+    "version": "0.0.1",
+    "configurations": [
+      
+      {
+        "name": "Todo-Profile",
+        "type": "dart",
+        "request": "launch",
+        "program": "lib/main.dart",
+        "flutterMode": "profile"
+      },
+  
+      { 
+        "name": "Todo-Debug",
+        "request": "launch",
+        "type": "dart",
+        "program": "lib/main.dart",
+        "flutterMode": "debug"
+      },
+
+      { 
+        "name": "Todo-Release",
+        "request": "launch",
+        "type": "dart",
+        "program": "lib/main.dart",
+        "flutterMode": "release"
+      },
+     
+    ]
+  }
