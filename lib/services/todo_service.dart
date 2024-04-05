@@ -11,8 +11,10 @@ abstract class TodoService {
 
   @GET("/")
   Future<List<TodoModel>> get(
-    @Query("_start") int start,
-    @Query("_limit") int limit,
+  {
+    @Query("_start") int? start,
+    @Query("_limit") int? limit,
+  }
   );
 
   @GET("/{id}")

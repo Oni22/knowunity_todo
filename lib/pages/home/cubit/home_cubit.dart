@@ -9,14 +9,11 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeState.initial());
   final api = useApi();
-
-  Future<List<TodoModel>> _fetchTodos(int start, int limit) async {
-    return await api.todo.get(start, limit);
-  }
+  var nextId = 200;
 
   Future<void> getTodos() async {
     try {
-      final todos = await _fetchTodos(state.start, state.limit);
+      final todos = await api.todo.get(start: state.start, limit: state.limit);
       emit(state.copyWith(todos: () => todos, isLoading: () => false));
     } catch (err) {
       // add error handling
@@ -26,12 +23,13 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> loadMoreTodos() async {
     try {
       emit(state.copyWith(isLoadingMore: () => true));
-      final newLimit = state.start + state.limit;
-      final todos = await _fetchTodos(newLimit, state.limit);
+      final startAt = state.start + state.limit;
+      final todos = await api.todo.get(start: startAt, limit: state.limit);
       emit(state.copyWith(
           todos: () => [...state.todos, ...todos],
           isLoadingMore: () => false,
-          start: () => newLimit));
+            start: () => startAt),
+      );
     } catch (err) {
       // add error handling
     }
@@ -42,11 +40,16 @@ class HomeCubit extends Cubit<HomeState> {
     // we also mock the id since we don't have a post endpoint
     final todo = TodoModel(
       userId: 1,
-      id: state.todos.length + 1,
+      id: nextId++, // we increment the id based on the default from json placeholder (200) to make it unique
       title: title,
       completed: false,
     );
-    emit(state.copyWith(todos: () => [todo, ...state.todos]));
+    emit(
+      state.copyWith(
+        todos: () => [todo, ...state.todos],
+        totalItems: () => state.totalItems + 1,
+      ),
+    );
   }
 
   void toggleTodo(int id, bool value) {
@@ -59,6 +62,12 @@ class HomeCubit extends Cubit<HomeState> {
       title: todo.title,
       completed: value,
     );
-    emit(state.copyWith(todos: () => newTodos));
+    final completedItems = state.completedItems + (value ? 1 : -1);
+    emit(
+      state.copyWith(
+        todos: () => newTodos,
+        completedItems: () => completedItems,
+      ),
+    );
   }
 }

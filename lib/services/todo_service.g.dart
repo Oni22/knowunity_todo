@@ -21,15 +21,16 @@ class _TodoService implements TodoService {
   String? baseUrl;
 
   @override
-  Future<List<TodoModel>> get(
-    int start,
-    int limit,
-  ) async {
+  Future<List<TodoModel>> get({
+    int? start,
+    int? limit,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'_start': start,
       r'_limit': limit,
     };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result =

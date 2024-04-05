@@ -1,16 +1,15 @@
 import 'dart:async';
 
 import 'package:confetti/confetti.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:knowunity_todo/pages/home/cubit/home_cubit.dart';
+import 'package:knowunity_todo/pages/home/utils/progress_header_delegate.dart';
 import 'package:knowunity_todo/pages/home/widgets/add_todo_form.dart';
 import 'package:knowunity_todo/pages/home/widgets/todo_item.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -139,6 +138,13 @@ class _HomePageState extends State<HomePage> {
                       ],
                       expandedHeight: 200,
                     ),
+                   
+                    SliverPersistentHeader(
+                      delegate: ProgessHeaderDelegate(
+                        progress: (state.completedItems / state.totalItems),
+                      ),
+                      pinned: true,
+                    ),
                     SliverList.builder(
                       itemCount: state.todos.length,
                       itemBuilder: (context, index) {
@@ -147,10 +153,7 @@ class _HomePageState extends State<HomePage> {
                           title: "${todo.id} - ${todo.title}",
                           completed: todo.completed,
                           onToggle: (value) {
-                            homeCubit.toggleTodo(todo.id, value);
-                            if (value) {
-                              _controllerCenter.play();
-                            }
+                            handleTodoStatus(todo.id, value);
                           },
                         );
                       },
@@ -185,6 +188,59 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void handleTodoStatus(int id, bool value) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RichText(
+                  text: TextSpan(
+                style: const TextStyle(color: Colors.black),
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Are you sure you want to mark this task as ',
+                  ),
+                  TextSpan(
+                    text: '${value ? "completed" : "open"}?',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              )),
+              const SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    key: const Key("alert-btn-yes"),
+                    onPressed: () {
+                      homeCubit.toggleTodo(id, value);
+                      if (value) {
+                        _controllerCenter.play();
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Yes"),
+                  ),
+                  ElevatedButton(
+                    key: const Key("alert-btn-no"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("No"),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
