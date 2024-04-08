@@ -31,8 +31,8 @@ class _HomePageState extends State<HomePage> {
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
         debouncer?.cancel();
+        homeCubit.loadMoreTodos();
         debouncer = Timer(const Duration(milliseconds: 200), () {
-          print("LOAD MORE!");
           homeCubit.loadMoreTodos();
         });
       }
