@@ -1,16 +1,13 @@
-# knowunity_todo
-
-A new Flutter project.
-
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project uses Flutter Version Manager (fvm) see: https://fvm.app/
 
-A few resources to get you started if this is your first Flutter project:
+If you are using fvm as well run these commands first:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1. fvm install 
+2. fvm flutter pub get
+3. fvm flutter run
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Under the .fvm folder u can find the fvm_config.json. The current used Flutter version for this project is 3.19.4.
+
+Please make sure that u use this version or higher to prevent unexpected errors if you don't use Flutter Version Manager.

@@ -1,22 +1,36 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:knowunity_todo/api/api.dart';
+import 'package:knowunity_todo/interfaces/error.dart';
 import 'package:knowunity_todo/models/todo_model/todo_model.dart';
-import 'package:meta/meta.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeState.initial());
   final api = useApi();
-  var nextId = 200;
+  var nextId = 200; // json placeholder default size
+  
 
   Future<void> getTodos() async {
     try {
+      emit(state.copyWith(status: () => Status.loading));
       final todos = await api.todo.get(start: state.start, limit: state.limit);
-      emit(state.copyWith(todos: () => todos, isLoading: () => false));
+      emit(
+        state.copyWith(
+          todos: () => todos,
+          status: () => Status.success,
+        ),
+      );
     } catch (err) {
-      // add error handling
+      emit(
+        state.copyWith(
+          error: () => CustomError(
+            message: err.toString(),
+          ),
+          status: () => Status.failure,
+        ),
+      );
     }
   }
 
@@ -31,13 +45,21 @@ class HomeCubit extends Cubit<HomeState> {
             start: () => startAt),
       );
     } catch (err) {
-      // add error handling
+      emit(
+        state.copyWith(
+          error: () => CustomError(
+            message: err.toString(),
+          ),
+          status: () => Status.failure,
+        ),
+      );
+
     }
   }
 
   void addTodo(String title) {
     // we mock the user id since we don't have a user system
-    // we also mock the id since we don't have a post endpoint
+    // we also mock the id since we don't have a post endpoint for todos
     final todo = TodoModel(
       userId: 1,
       id: nextId++, // we increment the id based on the default from json placeholder (200) to make it unique

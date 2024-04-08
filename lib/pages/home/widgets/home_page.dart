@@ -138,13 +138,43 @@ class _HomePageState extends State<HomePage> {
                       ],
                       expandedHeight: 200,
                     ),
-                   
+                  
+                  if (state.status == Status.loading)
+                    const SliverFillRemaining(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  if (state.status == Status.failure)
+                    SliverFillRemaining(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(state.error != null
+                                ? state.error!.message
+                                : "Oops! Something went wrong."),
+                            const SizedBox(height: 10),
+                            ElevatedButton(
+                              onPressed: () {
+                                homeCubit.getTodos();
+                              },
+                              child: const Text("Retry"),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (state.status == Status.success && state.todos.isNotEmpty)
+                    if (state.status == Status.success &&
+                        state.todos.isNotEmpty)
                     SliverPersistentHeader(
                       delegate: ProgessHeaderDelegate(
                         progress: (state.completedItems / state.totalItems),
                       ),
                       pinned: true,
                     ),
+                  if (state.status == Status.success && state.todos.isNotEmpty)
                     SliverList.builder(
                       itemCount: state.todos.length,
                       itemBuilder: (context, index) {
@@ -158,6 +188,7 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     ),
+
                     SliverSafeArea(
                       minimum: const EdgeInsets.only(bottom: 100),
                       sliver: SliverToBoxAdapter(
@@ -170,7 +201,8 @@ class _HomePageState extends State<HomePage> {
                     )
                   ],
                 );
-              }),
+            },
+          ),
           Align(
             alignment: Alignment.center,
             child: ConfettiWidget(
