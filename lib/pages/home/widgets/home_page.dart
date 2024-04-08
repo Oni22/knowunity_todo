@@ -189,6 +189,16 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
 
+                  if (state.isLoadingMoreError)
+                    SliverSafeArea(
+                      minimum: const EdgeInsets.only(bottom: 100),
+                      sliver: SliverToBoxAdapter(
+                        child: Text(state.error != null
+                            ? state.error!.message
+                            : "Oops! Something went wrong."),
+                      ),
+                    )
+                  else
                     SliverSafeArea(
                       minimum: const EdgeInsets.only(bottom: 100),
                       sliver: SliverToBoxAdapter(

@@ -5,6 +5,7 @@ enum Status { initial, loading, success, failure }
 class HomeState extends Equatable {
   final List<TodoModel> todos;
   final bool isLoadingMore;
+  final bool isLoadingMoreError;
   final int start;
   final int limit;
   final int totalItems;
@@ -14,6 +15,7 @@ class HomeState extends Equatable {
 
   const HomeState._(
       {required this.todos,
+    required this.isLoadingMoreError,
     required this.status,
       required this.start,
       required this.isLoadingMore,
@@ -28,6 +30,7 @@ class HomeState extends Equatable {
       todos: [],
       status: Status.initial,
       isLoadingMore: false,
+      isLoadingMoreError: false,
       start: 0,
       limit: 15,
       completedItems:
@@ -46,6 +49,7 @@ class HomeState extends Equatable {
     int Function()? totalItems,
     int Function()? completedItems,
     CustomError? Function()? error,
+    bool Function()? isLoadingMoreError,
   }) {
     return HomeState._(
       todos: todos?.call() ?? this.todos,
@@ -56,6 +60,7 @@ class HomeState extends Equatable {
       totalItems: totalItems?.call() ?? this.totalItems,
       completedItems: completedItems?.call() ?? this.completedItems,
       error: error?.call() ?? this.error,
+      isLoadingMoreError: isLoadingMoreError?.call() ?? this.isLoadingMoreError,
     );
   }
 
@@ -64,6 +69,7 @@ class HomeState extends Equatable {
         todos,
         status,
         isLoadingMore,
+        isLoadingMoreError,
         start,
         limit,
         totalItems,

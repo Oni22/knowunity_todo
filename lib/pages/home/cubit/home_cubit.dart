@@ -36,7 +36,12 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadMoreTodos() async {
     try {
-      emit(state.copyWith(isLoadingMore: () => true));
+      emit(
+        state.copyWith(
+          isLoadingMore: () => true,
+          isLoadingMoreError: () => false,
+        ),
+      );
       final startAt = state.start + state.limit;
       final todos = await api.todo.get(start: startAt, limit: state.limit);
       emit(state.copyWith(
@@ -50,7 +55,8 @@ class HomeCubit extends Cubit<HomeState> {
           error: () => CustomError(
             message: err.toString(),
           ),
-          status: () => Status.failure,
+            isLoadingMore: () => false,
+            isLoadingMoreError: () => true
         ),
       );
 
